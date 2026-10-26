@@ -99,6 +99,26 @@ See the [example config](./example-embed.conf) on how to configure an external d
 
    The `-g` option is for installing `patreon-dl` globally and have the CLI executable added to the PATH. Depending on your usage, you might not need this.
 
+### Docker
+
+Build the image and bind-mount a host directory as `/data` so downloads remain on the host:
+
+```
+$ docker build -t patreon-dl .
+$ docker run --rm -it -v "$PWD/downloads:/data" patreon-dl [OPTION]... URL
+```
+
+The container runs as the non-root `node` user. Ensure the bind-mounted directory is writable by the container user before starting a download. The image includes FFmpeg; Deno and a browser are not included.
+
+To build and run the content browser server:
+
+```
+$ docker build -t patreon-dl .
+$ docker run --rm -it -p 3000:3000 -v "$PWD/downloads:/data:ro" patreon-dl /app/bin/patreon-dl-server.js --data-dir /data --port 3000
+```
+
+Open [http://localhost:3000](http://localhost:3000) in a browser.
+
 ## CLI usage
 
 ```
